@@ -21,7 +21,6 @@ onMounted(() => {
 
 <template lang="pug">
 ElConfigProvider(:locale="storeI18n.elLocale")
-
   NuxtLoadingIndicator(color="#86D4A187")
   NuxtLayout
     NuxtPage

@@ -1,5 +1,4 @@
-// 顯示 header
-
+// Line 連結跳轉
 export const MixinLineCheck = () => {
   const storeTool = StoreTool();
   const route = useRoute();
