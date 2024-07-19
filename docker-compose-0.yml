@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: test_mongodb
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE
+      - TZ
+    volumes: 
+      - ./mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+      - ./mongodb/configdb:/data/configdb
+      - ./mongodb/data:/data/db
+    ports: 
+      - '27017:27017'
+
+  

@@ -1,0 +1,36 @@
+version: "3.7"
+
+services:
+    main_app:
+        image: xxx/xxx:latest  # 使用 xxx/xxx:latest 映像
+        container_name: projectName_app  # 定義容器名稱為 'projectName_app'
+        restart: always  # 總是在容器終止時重新啟動
+        ports:
+            - "8080:80"  # 將主機的 8080 埠對應到容器的 80 埠
+        env_file: .env  # 使用根目錄中的 .env 檔案中的環境變數
+        depends_on:
+            db:
+                condition: service_healthy  # 等待 'db' 服務標示為健康後才啟動此服務
+        environment:
+            - TZ=Asia/Taipei  # 設置容器的時區為台北（UTC+8）
+        networks:
+            - projectName-network  # 連接到 'projectName-network' 網路
+
+    db:
+        build: ./mysql  # 使用位於 './mysql' 資料夾中的 Docker 檔案建構服務
+        image: projectName_db  # 定義映像標籤為 'projectName_db'
+        container_name: projectName_db  # 定義容器名稱為 'projectName_db'
+        restart: always  # 總是在容器終止時重新啟動
+        environment:
+            - MYSQL_ROOT_PASSWORD=root  # 設定 MySQL 的 root 密碼為 'root'
+        ports:
+            - "3307:3306"  # 將主機的 3307 埠對應到容器的 3306 埠
+        networks:
+            - projectName-network  # 連接到 'projectName-network' 網路
+        healthcheck:
+            test: mysqladmin ping -h 127.0.0.1 -uroot --password=root  # 健康檢查使用的命令
+            timeout: 5s  # 超時時間為 5 秒
+            retries: 20  # 最多嘗試 20 次健康檢查
+
+networks:
+    projectName-network:  # 定義 'projectName-network' 網路

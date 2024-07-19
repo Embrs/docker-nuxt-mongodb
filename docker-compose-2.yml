@@ -1,0 +1,66 @@
+services:
+    app:
+        image: athena0080/dev_tcoa_backend:latest
+        container_name: test_tcoa_backend
+        restart: always
+        env_file: .env
+        volumes:
+            - test_tcoa_backend_storage:/var/www/html/storage/
+        environment:
+            - TZ
+            - COMPOSE_PROJECT_NAME
+        networks:
+            - test_tcoa_network
+            - mysql_network
+
+    backstage:
+        image: athena0080/dev_tcoa_bgm:latest
+        container_name: test_tcoa_backstage
+        restart: always
+        depends_on:
+            - app
+        env_file: .backstage_env
+        environment:
+            - TZ
+            - COMPOSE_PROJECT_NAME
+        networks:
+            - test_tcoa_network
+
+    frontend:
+        image: athena0080/dev_tcoa_frontend:latest
+        container_name: test_tcoa_frontend
+        restart: always
+        depends_on:
+            - app
+        env_file: .frontend_env
+        environment:
+            - TZ
+            - COMPOSE_PROJECT_NAME
+        networks:
+            - test_tcoa_network
+
+    nginx:
+        build: ./nginx
+        container_name: test_tcoa_nginx
+        restart: always
+        environment:
+            - COMPOSE_PROJECT_NAME
+        ports:
+            - "8105:80"
+        depends_on:
+            - app
+        networks:
+            - test_tcoa_network
+
+networks:
+    test_tcoa_network:
+    mysql_network:
+      external: true
+
+volumes:
+  test_tcoa_backend_storage:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ./storage

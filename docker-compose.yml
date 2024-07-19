@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  mongodb:
+    #build: ./mongodb  # 使用位於 './mongodb' 資料夾中的 DockerFile 檔案建構服務
+    image: mongo:latest
+    container_name: mongo
+    restart: always
+    command: --auth --config /etc/mongo/mongod.conf
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME
+      - MONGO_INITDB_ROOT_PASSWORD
+      - MONGO_INITDB_DATABASE
+      - TZ
+    volumes: 
+      - ./mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+      - ./mongodb/configdb:/data/configdb
+      - ./mongodb/data:/data/db
+      - ./mongodb/mongod.conf:/etc/mongo/mongod.conf
+    ports: 
+      - '27017:27017'
+
+  web:
+    build: ./nuxt  # 使用位於 './nuxt' 資料夾中的 DockerFile 檔案建構服務
+    image: nuxt # 定義映像標籤
+    container_name: nuxt  # 定義容器名稱
+    restart: always  # 總是在容器終止時重新啟動
+    depends_on:
+      - mongodb
+
+    env_file:
+      - .env.web
+
+    environment:
+      - TZ
+
+    ports:
+      - "3003:3000"
