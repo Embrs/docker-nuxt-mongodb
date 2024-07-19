@@ -6,9 +6,11 @@ https://www.notion.so/fb92b39fa20b45fda7b5f81729b0f673?v=e1d77d5b9c004c4d878233c
 ```
 1. 安裝 MongoDB Compass
 
-2. 啟動 docker compose up
+2. sh depoly.sh
 
-3. 關閉 docker compose down
+# 2. 啟動 docker compose up
+
+# 3. 關閉 docker compose down
 
 網頁 localhost:3003
 ```
